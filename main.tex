@@ -20,7 +20,7 @@
 
 
 \title[Your Short Title]{Nonlinear Control Systems}
-\subtitle{Lsn 3: Fundamentals of Lyapunov Theory}
+\subtitle{Lsn 4: Advanced Stability Theory}
 \author{I. Weintraub, Dr. Cobb, \& Capt. Hess}
 \institute{Air Force Institute of Technology}
 \date{\today}
@@ -31,1033 +31,688 @@
   \titlepage
 \end{frame}
 
+
 \begin{frame}
-\frametitle{Nonlinear Systems and Equilibrium Points}
+\frametitle{Advanced Stability Theory}
+\textbf{Concepts Concerning Stability}
+\begin{itemize}
+\item Concepts of stability for non-autonomous systems
+\item Lyapunov analysis of non-autonomous systems
+\item Instability theorems
+%\item Existence of Lyapunov functions
+\item Lyapunov Analysis using Barbalat's Lemma
+%\item Positive linear systems
+%\item The passivity formalism
+%\item Absolute Stability
+%\item Establishing boundedness signals
+%\item Existence and unicity solutions
+\end{itemize}
+
+\begin{table}
+\centering
+    \begin{tabular}{l  c}
+    \hline
+     & Topic \\ \hline
+    $\checkmark$ Week 1 & Introduction and Math Review\\
+    $\checkmark$ Week 1-2 & Phase Plane Analysis\\
+    Week 2-4 & Fundamentals of Lyapunov Theory\\
+    Week 4   & Advanced Stability Theory\\
+    Week 4-5 & Describing Functions \\
+    Week 5-7 & Feedback Linearizion \\ 
+    Week 8-9 & Sliding Mode Control \\
+    Week 10  & Adaptive Control \\\hline
+    \end{tabular}
+\end{table}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Concepts of Stability for Non-Autonomous Systems}
 \small
-\textbf{Nonlinear Systems}\\
-A \underline{nonlinear dynamic system} can usually be represented by a set of nonlinear differential equations in the form:
+Due to the dependence of non-autonomous system behavior on initial time, $t_0$, definitions include $t_0$ explicitly.\\
+\vspace{6pt}
+\textbf{Non-Autonomous System}
 \begin{equation*}
 \dot{\mathbf{x}} = \mathbf{f}(\mathbf{x},t)
 \end{equation*}
-where $\mathbf{f}$ is an $n \times 1$ nonlinear vector function, and $\mathbf{x}$ is the $n \times 1$ state vector. We define $n$ as the \textit{order} of the system. If we define the control $\mathbf{u}(t)$ as the control input. If the plant dynamics are:
+Has an equilibrium point $\mathbf{x}^*$:
 \begin{equation*}
-\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x},\mathbf{u},t)
+\mathbf{f}(\mathbf{x}^*,t) = 0 \quad \forall  \; t \geq t_0
 \end{equation*}
-And some control law has been selected
+\textbf{Definition:} An equilibrium point $\mathbf{0}$ is \underline{stable} at $t_0$ if for any $R>0$ there exists a positive scalar $r(R,t_0)$ such that:
 \begin{equation*}
-\mathbf{u} = \mathbf{g}(\mathbf{x},t)
+||\mathbf{x}(t_0)|| < r \Rightarrow ||\mathbf{x}(t)||<R \quad \forall \; t \geq t_0
 \end{equation*}
-then the closed-loop dynamics are
-\begin{equation*}
-\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x},\mathbf{g}(\mathbf{x},t),t)
-\end{equation*}
-A special class of system is the linear system. The general form of the dynamics are of the form:
-\begin{equation*}
-\dot{\mathbf{x}} = \mathbf{A}\mathbf{x}
-\end{equation*}
+Otherwise the point $\mathbf{0}$ is unstable.\\
+\vspace{6pt}
+We can keep the state in a ball of arb. small radius $R$ by starting the state trajectory in a ball of sufficiently small radius $r$.
 \end{frame}
 
 \begin{frame}
-\frametitle{Nonlinear Systems and Equilibrium Points}
+\frametitle{Concepts of Stability for Non-Autonomous Systems}
 \small
-\textbf{Autonomous and Non-Autonomous Systems}\\
-The \textit{nonlinear system} is said to be \underline{autonomous} if $\mathbf{f}$ \textit{does not depend explicitly on time, i.e.,} if the systems state equation can be written
+\textbf{Definition:} The equilibrium point $\mathbf{0}$ is \underline{asymptotically stable} at a time $t_0$ if:
+\begin{enumerate}
+\item It is stable
+\item $\exists \; r(t_0) > 0$ s.t. $||\mathbf{x}(t_0)||<r(t_0) \Rightarrow ||\mathbf{x}(t)|| \rightarrow \mathbf{0}$ as $t \rightarrow \infty$
+\end{enumerate}
+Requires that there exists an attractive region for every initial time $t_0$.\\
+\vspace{6pt}
+\textbf{Definition:} The equilibrium $\mathbf{0}$ is \underline{exponentially stable} if there exists two positive numbers $\alpha \; \& \; \lambda$ s.t. for sufficiently small $\mathbf{x}(t_0)$:
 \begin{equation*}
-\dot{\mathbf{x}} = \mathbf{f(\mathbf{x})}
+|| \mathbf{x} || \leq \alpha || \mathbf{x} (t) || e^{- \lambda(t - t_0)} \quad \forall \; t \geq t_0
 \end{equation*}
-\textit{Otherwise the system is called \underline{non-autonomous}}\\
-\vspace{6pt}
-\textbf{Fundamental Difference:}\\
-The fundamental difference between autonomous and non-autonomous systems lies in the fact that the state trajectory of an autonomous system is independent of the initial time, while that of a non-autonomous system generally is not.\\
-\vspace{6pt}
-\textbf{Examples:}\\
-\begin{center}
-$\dot{\begin{bmatrix}
-x_1 \\ x_2
-\end{bmatrix}} = \begin{bmatrix}
-\cos(x_1) \\ \sin(x_2)
-\end{bmatrix}$ Autonomous\\
-\vspace{6pt}
-$\dot{\begin{bmatrix}
-x_1 \\ x_2
-\end{bmatrix}} = \begin{bmatrix}
-t \cos(x_1) \\ t \sin(x_2)
-\end{bmatrix}$ Non-Autonomous\\
-\end{center}
+\textbf{Definition:} The equilibrium point $\mathbf{0}$ is \underline{globally asymptotically stable} if $\forall \mathbf{x}(t_0)$:
+\begin{equation*}
+\mathbf{x}(t) \rightarrow \mathbf{0} \; \text{as} \; t \rightarrow \infty
+\end{equation*}
 \end{frame}
 
 \begin{frame}
-\frametitle{Nonlinear Systems and Equilibrium Points}
+\frametitle{Concepts of Stability for Non-Autonomous Systems}
 \small
-\textbf{Equilibrium Point}\\
-\textit{A state $\mathbf{x}^*$ is an \underline{equilibrium point} of the system if once $\mathbf{x}(t)$ is equal to $\mathbf{x}^*$, it remains equal to $\mathbf{x}^*$ for all future time}.\\
-\vspace{6pt}
-Solving the autonomous system for the equilibrium state can be done by solving the system of equations represented by
-\begin{equation*}
-\mathbf{0} = \mathbf{f}(\mathbf{x}^*)
-\end{equation*}
-\textbf{Equilibrium Point for Linear Time-Invariant System}\\
-A linear time-invariant system has a single equilibrium point (the origin $\mathbf{0}$) if $\mathbf{A}$ is nonsingular. If $\mathbf{A}$ is singular, it has an infinity of equilibrium points, which are contained in the null-space of the matrix $\mathbf{A}$. (i.e. the subspace defined by $\mathbf{Ax=0}$)\\
-\vspace{6pt}
+\textbf{Example:} $\mathbf{\dot{x}}(t) = -a(t)\mathbf{x}(t)$
+The solution to this first order differential equation is: $\mathbf{x}(t) = \mathbf{x}(t_0) \exp \left[  -\int_{t_0}^{t} a(r) dr \right]$\\
+\begin{itemize}
+\item The system is \underline{stable} if $a(t) \geq 0 \; \forall \; t\geq t_0$
+\item The system is \underline{asymptotically stable} if $\int_{0}^{\infty} a(r) dr = +\infty$
+\item The system is \underline{exponentially stable} if there exists $T>0$ s.t. $\forall \; t \; \geq 0$ , $\int_{t}^{t+T} a(r) dr \geq \gamma $ where $\gamma = \text{const.} > 0$. 
+\end{itemize}
+Examples:
+\begin{itemize}
+\item ${\dot{x}} = - \frac{x}{(1+t)^2}$ is stable but not asymptotically stable
+\item ${\dot{x}} = - \frac{x}{(1+t)}$ is asymptotically stable
+\item ${\dot{x}} = - t x$ is exponentially stable
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Nonlinear Systems and Equilibrium Points}
+\frametitle{Concepts of Stability for Non-Autonomous Systems}
+\small
+\textbf{Uniformity:} ``In practice it is usually desirable for the system to have certain uniformity in its behavior regardless of when the operation starts''- Slotine. Because the behavior of autonomous systems is independent of the initial time, all the stability properties of an autonomous system are uniform.\\
+\vspace{6pt}
+\textbf{Definition:} the equilibrium point $\mathbf{0}$ is \underline{locally uniformly stable} if the scalar $r$ chosen independent of $t_0$:
+\begin{equation*}
+\forall t \geq t_0 \; , \; ||\mathbf{x}(t_0)|| < r \Rightarrow ||\mathbf{x}(t)|| < R \quad  \text{i.e. if:} \; r = r(R)
+\end{equation*}
+\textbf{Definition:} The equilibrium point at the origin is locally \underline{uniformly asymptotically stable} if:
+\begin{itemize}
+\item It is uniformly stable
+\item There exists a ball of attraction $\mathbf{B_{R_0}}$, whose radius is independent of $t_0$, such that any system trajectory with initial states in $\mathbf{B_{R_0}}$ converge to $\mathbf{0}$ uniformly in $t_0$.
+\end{itemize}
+\end{frame}
 
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\textbf{Equilibrium Example:}\\
-Pendulum with length $R$, mass $M$, drag $b$, and gravity $g$. State Space variables: $x_1 = \theta$ and $x_2 = \dot{\theta}$\\
+\begin{frame}
+\frametitle{Concepts of Stability for Non-Autonomous Systems}
+\small
+\textbf{Uniform Convergence}: For all $R_1$ and $R_2$ satisfying $0<R_2<R_1\leq R_0 \; \exists \; T(R_1,R_2) >0$ s.t. $\forall t_0 \geq 0$.
+\begin{equation*}
+||\mathbf{x}(t_0)|| < R_1 \Rightarrow ||\mathbf{x}(t)|| < R_2 \quad \forall t \geq t_0 + T(R_1,R_2)
+\end{equation*}
+The state trajectory starting from within a ball $\mathbf{B}_{R_1}$ will converge into a smaller ball $\mathbf{B}_{R_2}$ after a time period $T$ which is independent of $t_0$.\\
+\vspace{6pt}
+Exp. Stability $\Rightarrow$ Unif. Asymp. Stability $\Rightarrow$ Asymp. Stability\\
+\vspace{6pt}
+\textbf{Example:} $\dot{x} = - \frac{x}{1+t}$ has general solution:\\
+\begin{equation*}
+x(t) = \frac{1 + t_0}{1 + t} x(t_0)
+\end{equation*}
+Note that this first order system is asymptotically stable, but not uniformly since larger $t_0$ requires longer time to get close to the origin.\\
+\vspace{6pt}
+\underline{Global Uniformly Asymptotic Stability} replaces ball of attraction $\mathbf{B}_{R_0}$ by the entire state space.
+\end{frame}
+
+\begin{frame}
+\frametitle{Lyapunov Analysis of Non-Autonomous Systems}
+\small
+\textbf{Lyapunov's Direct Method of Non-Autonomous Systems}\\
+\vspace{3pt}
+A scalar time-varying function $V(\mathbf{x},t)$ is \underline{locally positive definite} if $V( \mathbf{0},t) =0$ and there exists a time-invariant positive definite function $V_0(\mathbf{x})$ such that:
+\begin{equation*}
+\forall \; t \geq t_0 \quad V( \mathbf{x},t) \geq V_0(\mathbf{x})
+\end{equation*}
+Therefore a time-variant function is locally positive definite if it dominates a time-invariant locally positive definite function.\\
+\vspace{6pt}
+\textbf{Definition:} A scalar function  $V(\mathbf{x},t)$ is \underline {decrescent} if $V(\mathbf{0},t) = 0$ and if there exists a time-invariant positive definite function $V_1(\mathbf{x})$ such that:
+\begin{equation*}
+\forall \; t \geq 0 \;,\; V(\mathbf{x},t) \leq V_1(\mathbf{x})
+\end{equation*}
+A function $V(\mathbf{x},t)$ is decrescent if it is dominated by a time-invariant positive definition function.
+\end{frame}
+
+\begin{frame}
+\frametitle{Lyapunov Analysis of Non-Autonomous Systems}
+\small
+\textbf{Example:} $V(\mathbf{x},t) = ( 1 + \sin ^2 t)(x_1^2 + x_2^2)$\\
+This is a time-varying positive definite function because it dominates the function: $V_0(\mathbf{x}) = x_1^2 + x_2^2$.  This function is also decrescent because it is dominated by the function $V_1(\mathbf{x}) = 2(x_1^2 + x_2^2)$.\\
+\vspace{6pt}
+\textbf{Chain Rule for Time Varying Functions:}
+\begin{equation*}
+\frac{d V}{d t} = \frac{\partial V}{\partial t} + \frac{\partial V}{\partial \mathbf{x}}\dot{\mathbf{x}} = \frac{\partial V}{\partial t} + \frac{\partial V}{\partial \mathbf{x}} f(\mathbf{x},t)
+\end{equation*}
+\textbf{Lyapunov Thm. for Non-Autonomous Systems}\\
+If in a ball $\mathbf{B}_{R_0}$ around the equilibrium point $\mathbf{0}$, there exists a scalar function $V(\mathbf{x},t)$ with continuous partial derivatives such that:
+\begin{enumerate}
+\item $V$ is positive definite
+\item $\dot{V}$ is negative semi-definite
+\end{enumerate}
+Then the equilibrium point $\mathbf{0}$ is stable in the sense of Lyapunov
+\end{frame}
+
+\begin{frame}
+\frametitle{Lyapunov Analysis of Non-Autonomous Systems}
+\footnotesize
+\textbf{Uniform stability and uniform asymptotic stability}\\
+If in a ball $\mathbf{B}_{R_0}$ around the equilibrium point $\mathbf{0}$, there exists a scalar function $V(\mathbf{x},t)$ with continuous partial derivatives such that:
+\begin{enumerate}
+\item $V$ is positive definite
+\item $\dot{V}$ is negative semi-definite
+\item $V$ is decrescent
+\end{enumerate}
+the origin is \underline{uniformly stable}.\\
+\vspace{6pt}
+\textbf{Further:}\\
+If $\dot{V} < 0$ then the equilibrium point is uniformly asymptotically stable.\\
+\vspace{6pt}
+\textbf{Global uniform asymptotic stability}\\
+If in the \underline{whole state space} there exists a scalar function $V(\mathbf{x},t)$ with continuous partial derivatives such that:
+\begin{enumerate}
+\item $V$ is positive definite
+\item $\dot{V}$ is negative semi-definite
+\item $V$ is decrescent
+\item $V(\mathbf{x},t)$ is radially unbounded
+\end{enumerate}
+the origin is \underline{globally uniformly asymptotically stable}.
+\end{frame}
+
+\begin{frame}
+\frametitle{Lyapunov Analysis of Non-Autonomous Systems}
+\small
+\textbf{Example:}
+\begin{equation*}
+\begin{aligned}
+\dot{x}_1 &= -x_1(t) - e^{-2t} x_2(t)\\
+\dot{x}_2 &= -x_1(t) - x_2(t)
+\end{aligned}
+\end{equation*}
+To determine the stability of the equilibrium point at $\mathbf{0}$ , let us choose the following scalar function: $V(\mathbf{x},t) = x_1^2 + (1+e^{-2 t} )x_2^2$. \\
+\vspace{6pt}
+This function is positive definite, because it dominates the time-invariant positive function $x_1^2 + x_2^2$. It is also decrescent because it is dominated by the time-invariant positive definite function $x_1^2 + 2x_2^2$. Furthermore:
+\begin{equation*}
+\dot{V}(\mathbf{x},t) = -2(x_1^2 - x_1 x_2 + x_2^2(1+2 e^{-2t}))
+\end{equation*}
+Shows that 
+$\dot{V} \leq -2(x_1^2 - x_1 x_2 +x_2^2) = -(x_1 - x_2)^2 - x_1^2 - x_2^2$\\
+\vspace{6pt}
+Thus $\dot{V}$ is negative definite, and therefore, the point $\mathbf{0}$ is globally asymptotically stable.\\
+\vspace{6pt}
+\large
+``Stability results for non-autonomous systems can be less intuitive than those for autonomous systems'' - Slotine\\
+\begin{tiny}
+Examples: Slotine (pp 111-113)
+\end{tiny}
+\end{frame}
+
+\begin{frame}
+\frametitle{Lyapunov Analysis of Non-Autonomous Systems}
+\small
+\textbf{Lyapunov Analysis of Linear Time-Varying Systems}\\
+\vspace{6pt}
+Consider the linear-time varying system:
+\begin{equation*}
+\mathbf{\dot{x}} = \mathbf{A}(t) \mathbf{x}
+\end{equation*}
+``Since LTI systems are asymptotically stable if their eigenvalues all have negative real parts, once might be tempted to conjecture that systems of the type, $\mathbf{\dot{x}} = \mathbf{A}(t)\mathbf{x}$, will be stable if at any time $t \geq 0 $ all eigenvalues of $\mathbf{A}(t)$ all have negative real parts...'' However, this is not sufficient for stability of time-varying linear systems.\\
+\textbf{Example:}
+\begin{equation*}
+\frac{d}{dt}\begin{bmatrix}
+x_1 \\ x_2
+\end{bmatrix} = \begin{bmatrix}
+-1 & e^{2t} \\ 0 & -1
+\end{bmatrix} \begin{bmatrix}
+x_1 \\ x_2
+\end{bmatrix}
+\end{equation*}
+Solving:
+\begin{equation*}
+x_2 = x_2(0) e^{-t} \quad \dot{x}_1 + x_1 = x_2(0)e^t
+\end{equation*}
+$x_2(0) e^t$ tends to infinity and we can see that $x_1$ will grow and the system is unstable. Although the eigenvalues of $\mathbf{A}$ are both equal to $-1$ at all times.\\
+\textbf{}
+\end{frame}
+
+\begin{frame}
+\frametitle{Lyapunov Analysis of Non-Autonomous Systems}
+\small
+\textbf{Lyapunov Analysis of Linear Time-Varying Systems}\\
+\vspace{6pt}
+\textbf{Solution:} look at the eigenvalues of the symmetric matrix $\mathbf{P}(t) = \mathbf{A}(t) + \mathbf{A^T}(t)$.\\
+\vspace{6pt}
+The time varying system $\mathbf{\dot{x}} = \mathbf{A}(t) \mathbf{x}$ is asymptotically stable if the eigenvalues of the symmetric matrix $\mathbf{P}(t)$ remain strictly in the left-half complex plane.\\
+\begin{equation*}
+\exists \; \lambda > 0 , \forall \; i \; , \forall t \geq 0 , \lambda_i (\mathbf{A}(t) + \mathbf{A^T}(t)) \leq - \lambda
+\end{equation*}
+This can be readily shown using the Lyapunov function $V = \mathbf{x^T x}$ since:
+\begin{equation*}
+\dot{V} = \mathbf{x^T \dot{x}} + \mathbf{\dot{x}^T x} = \mathbf{x^T (A}(t)\mathbf{ + A^T}(t)\mathbf{) x} \leq -\lambda \mathbf{x^Tx} = - \lambda V
+\end{equation*}
+so that:
+\begin{equation*}
+\forall \; t \geq 0 , \quad   0 \leq \mathbf{x^Tx} = V(t) \leq V(0) e^{-\lambda t}
+\end{equation*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Lyapunov Analysis of Non-Autonomous Systems}
+\small
+\textbf{Perturbed Linear Systems}\\
+Consider: $\mathbf{\dot{x}} = (\mathbf{A_1 + A_2}(t))\mathbf{x}$\\
+\begin{itemize}
+\item $\mathbf{A}_1$ is const. with all eigenvalues in the L.H.P. (\textit{Hurwitz}).
+\item $\mathbf{A}_2(t) \rightarrow 0 $ as $t \rightarrow \infty$  
+\item $\int_{0}^{\infty} || \mathbf{A}_2(t) || dt < \infty$ (finite integral)
+\end{itemize}
+The system is Globally Asymptotically Stable\\
+\vspace{6pt}
+\textbf{Example:}\\
 \begin{equation*}
 \frac{d}{dt}
 \begin{bmatrix}
-x_1\\x_2
+x_1 \\ x_2 \\ x_3
 \end{bmatrix} = \begin{bmatrix}
-x_2\\\-\frac{b}{MR^2}x_2 - \frac{g}{R} \sin x_1
+-(5 x_2^5 + x_3^8)x_1\\
+-x_2 + 4 x_3^2\\
+-(2 \sin t) x_3
 \end{bmatrix}
 \end{equation*}
-Equilibrium points given by:\\
+Since $x_3$ tends towards zero exponentially, so does $x_3^2$, and therefore, so does $x_2$. Applying the above, the system is G.A.S.\\
+\end{frame}
+
+\begin{frame}
+\frametitle{Lyapunov Analysis of Non-Autonomous Systems}
+\small
+\textbf{Sufficient Smoothness Conditions on the $\mathbf{A}(t) Matrix$}\\
+Consider the linear system: \begin{equation*}
+\mathbf{\dot{x}} = \mathbf{A}(t)\mathbf{x}
+\end{equation*} and assume that at any time $t \geq 0$, the eigenvalues of $\mathbf{A}(t)$ all have negative real parts:
+\begin{equation*}
+\exists \; \alpha >0 , \forall \; i, \forall \; t \geq 0, \lambda_i [\mathbf{A}(t)]\leq - \alpha
+\end{equation*}
+If, in addition, the matrix $\mathbf{A}(t)$ remains bounded, and
+\begin{equation*}
+\int_{0}^{\infty} \mathbf{A^T}(t) \mathbf{A}(t) dt < \infty
+\end{equation*}
+Then the system is \underline{Globally Asymptotically Stable}
+\end{frame}
+
+\begin{frame}
+\frametitle{Instability Theorems}
+\footnotesize
+\textbf{First Instability Theorem}\\
+If in a certain neighborhood $\Omega$ if the origin, there exists a cont. differentiable, decrescent scalar function $V(\mathbf{x},t)$ such that:
+\begin{itemize}
+\item $V(\mathbf{0},t) = 0, \; \forall \; t \geq t_0$ 
+\item $V(\mathbf{x},t_0) > 0$ arb. close to the origin.
+\item $\dot{V}(\mathbf{x},t_0) > 0 \in \Omega$
+\end{itemize}
+\textbf{Example:}\\
 \vspace{6pt}
-$x_2 = 0$ and $\sin(x_1) = 0$ leading to points: $(0,0)$ and $(n\pi ,0)$
-\end{column}
-\begin{column}{0.5\textwidth}
-\begin{center}
-\includegraphics[width = 0.8\textwidth]{Figures/Fig31.PNG}
-\end{center}
-\end{column}
-\end{columns}
+\begin{equation*}
+\begin{aligned}
+\dot{x}_1 &= 2 x_2 + x_1 ( x_1^2 + 2 x_2^4)\\
+\dot{x}_2 &= -2 x_1 + x_2 (x_1^2 + x_2^4)
+\end{aligned}
+\end{equation*}
+Linearization of this system yields: $\dot{x}_1 = 2 x_2$ and $\dot{x}_2 = -2 x_1$. With eigenvalues at $\pm 2j$. Indicating that Lyapunov's Linearization Method can not determine the instability or stability of this system.\\
+However, if we take:
+\begin{equation*}
+V = \frac{1}{2} (x_1^2 + x_2^2) \Rightarrow \dot{V} = (x_1^2 + x_2^2)(x1^2 + x_2^4)
+\end{equation*}
+Because of the positive definiteness of $V$ and $\dot{V}$, the above thm. indicates the instability of the system.
 \end{frame}
 
 \begin{frame}
-\frametitle{Equilibrium Example}
+\frametitle{Instability Theorems}
 \small
-\textbf{Known/Find/Given:}\\
-Consider $\ddot{x} + (x-1)^4 \dot{x}^7 + x^5 = x^3\sin ^3(x)$
-\begin{enumerate}
-\item find the equilibrium points
-\end{enumerate}
-\textbf{Analysis:}\\
-Let $x_1 = x$ and $x_2 = \dot{x}$. The state space representation is:
+\textbf{Second Instability Theorem}\\
+If in a certain neighborhood $\Omega$ of the origin, there exists a continuously differentiable, decrescent scalar function $V(\mathbf{x},t)$ satisfying
+\begin{itemize}
+\item $V(\mathbf{0},t_0) = 0$ and $V(\mathbf{x},t_0) > 0$ arb. close to the origin.  
+\item $\dot{V}(\mathbf{x},t) - \lambda V(\mathbf{x},t) \geq 0 \quad \forall \; t \geq t_0 \quad \forall \; \mathbf{x} \in \Omega \quad \lambda > 0$
+\end{itemize}
+then the equilibrium point $\mathbf{0}$ at time $t_0$ is unstable.\\
+\vspace{6pt}
+\textbf{Example:}
 \begin{equation*}
 \begin{aligned}
-\dot{x}_1 &= x_2 = f_1(\mathbf{x})\\
-\dot{x}_2 &= x_1^3sin^3(x_1) - x_1^5 - (x_1-1)^4x_2^7 = f_2(\mathbf{x})
+\dot{x}_1 &= x_1 + 3 x_2 \sin ^2 x_2 + 5 x_1 x_2 ^2 \sin ^2 x_1\\ 
+\dot{x}_2 &= 3 x_1 \sin ^2 x_2 + x_2 - 5x_1^2 x_2 \cos^2 x_1
 \end{aligned}
 \end{equation*}
-Setting the R.H.S equal to zero to find the equilibrium points:
+Select
 \begin{equation*}
 \begin{aligned}
-\dot{x_1} = 0 = f_1(\mathbf{x}_{eq}) = 0 &\Rightarrow x_{2} = 0\\
-\dot{x_2} = 0 = f_2(\mathbf{x}_{eq}) = 0 &\Rightarrow 0 = x_1^3sin^3(x_1) - x_1^5 - (x_1-1)^4x_2^7
+V = \frac{1}{2}(x_1^2 - x_2^2) \Rightarrow \dot{V} &= x_1^2 - x_2^2 + 5x_1^2 x_2^2 \\
+&= 2V + 5x_1^2 x_2^2
 \end{aligned}
 \end{equation*}
-Plugging in $x_2 = 0$ we need to find the roots of the R.H.S in order to determine the equilibria.
+Then the equilibrium point at the origin is unstable.
 \end{frame}
-
-\begin{frame}
-\frametitle{Equilibrium Example Cont.}
-\small
-\begin{columns}
-\begin{column}{0.5\textwidth}
-With the state variable $x_2$ set to zero:
-\begin{equation*}
-\begin{aligned}
-x_1^3 \sin(x_1) - x_1^5 = 0
-\end{aligned}
-\end{equation*}
-From the plotted equation we see that there exists only one zero at the origin. This means that:
-\begin{equation*}
-\mathbf{x}_{eq} = \begin{bmatrix}
-x_{1,eq}\\x_{2,eq}
-\end{bmatrix} = \begin{bmatrix}
-0\\0
-\end{bmatrix}
-\end{equation*}
-is the only \underline{equilibrium point}.
-\end{column}
-\begin{column}{0.5\textwidth}
-\begin{figure}
-\centering
-\includegraphics[width = \textwidth]{Figures/EqExample.png}
-\end{figure}
-A plot of the nonlinear function: $y = x^3\sin(x)-x^5$
-\end{column}
-\end{columns}
-\end{frame}
-
 
 
 % \begin{frame}
-% \frametitle{Nominal Motion}
+% \frametitle{Instability Theorems}
 % \small
-% \begin{columns}
-% \begin{column}{0.5\textwidth}
-% \textbf{Stability of a \textit{Motion}}\\
-% Whether a system will remain close to its original trajectory if slightly perturbed away from it.\\
-% \vspace{6pt}
-% Let $\mathbf{x}^*(t)$ be the solution of the autonomous system 
-% \begin{equation*}
-% \dot{\mathbf{x}} = \mathbf{f(x)} \quad \& \quad \mathbf{x}^*(0) = \mathbf{x}_0
-% \end{equation*}
-% \vspace{6pt}
-% If we perturb the initial condition to\\
-% $\mathbf{x}(0) = \mathbf{x}_0 + \delta \mathbf{x}_0$ and study the associated variation of the motion error $\mathbf{e}(t) = \mathbf{x}(t) - \mathbf{x}^*(t)$
-% \begin{eqnarray*}
-% \mathbf{\dot{x}}^*=\mathbf{f(x^*)}  & \& & \mathbf{x}(0) = \mathbf{x}_0\\
-% \mathbf{\dot{x}}=\mathbf{f(x)}  & \& &  \mathbf{x}(0) = \mathbf{x}_0 + \mathbf{\delta x}_0
-% \end{eqnarray*}
-
-% \end{column}
-% \begin{column}{0.5\textwidth}
-% \small
-% \begin{center}
-% \includegraphics[width = 0.5\textwidth]{Figures/Fig32.PNG}
-% \end{center}
-% We have dynamics:
-% \begin{eqnarray*}
-% \mathbf{\dot{e}} &=& \mathbf{f}(\mathbf{x},t) - \mathbf{f}(\mathbf{x^*},t)\\
-% &=& \mathbf{f}(\mathbf{x}^* + \mathbf{e},t) - \mathbf{f}(\mathbf{x^*},t)=\mathbf{g}(\mathbf{e},t)
-% \end{eqnarray*}
-% With initial condition: $\mathbf{e}(0) = \delta \mathbf{x}_0$. Since $\mathbf{g}(\mathbf{0},t) = \mathbf{0}$ it has equilibrium  at $\mathbf{0}$. More importantly the error is non-autonomous which we go into more detail later. 
-% \end{column}
-% \end{columns}
+% \textbf{Third Instability Theorem}\\
+% Let $\Omega$ be a neighborhood of the origin. IF there exists a scalar function $V(\mathbf{x},t)$ with continuous first partial derivatives, decrescent in $\Omega$, and a region $\Omega_1 \subset \Omega$ such that:
+% \begin{itemize}
+% \item $V(\mathbf{x},t)$ and $\dot{V}(\mathbf{x},t)$ are P.D. in $\Omega_1$
+% \item The origin is a boundary point of $\Omega_1$
+% \item At the boundary points of $\Omega_1$ within $\Omega$, $V(\mathbf{x},t) = 0 \; \forall \; t \geq t_0$.
+% \end{itemize}
+% Then the equilibrium point $\mathbf{0}$ at $t_0$ is unstable.
 % \end{frame}
+
 
 % \begin{frame}
-% \frametitle{Nominal Motion Example}
+% \frametitle{Existence of Lyapunov Functions}
 % \small
-% \textbf{Spring-Mass-Damper System:}\\
-% Give the dynamics:
-% \begin{equation*}
-% m\ddot{x} + k_1 x + k_2 x^3 = 0
-% \end{equation*}
-% If we slightly perturb the initial position to be $x(0) = x_0 + \delta x_0$ The resulting trajectory is $x(t)$. Then the differential equation governing the motion error $e$ obeys the dynamics:
-% \begin{equation*}
-% m\ddot{e} + k_1 e + k_2 [e^3 + 3e^2x^*(t) + 3ex^{*2}(t)] = 0
-% \end{equation*}
-% Since this is a non-autonomous system, we will have to investigate more ways of solving this later.
+
 % \end{frame}
 
 \begin{frame}
-\frametitle{Concepts of Stability}
-Let $\mathbf{B}_R$ denote the spherical region (or ball) defined by $|| \mathbf{x}||<R$ in state-space.\\
-\vspace{6pt}
-Let $\mathbf{S}_R$ be the sphere itself, defined by $|| \mathbf{x} || = R$.\\
-\vspace{6pt}
-\textbf{Stable and Unstable}\\
-The equilibrium state $\mathbf{x}= \mathbf{0}$ is said to be \underline{stable} if, for any $R>0$, there exists $r>0$, such that if $||\mathbf{x}(0)||<r$, then $||\mathbf{x}(t)||<R$ for all $t \geq 0$. Otherwise the equilibrium point is \underline{unstable}.
-\end{frame}
-
-\begin{frame}
-\frametitle{Concepts of Stability}
+\frametitle{Lyapunov Analysis using Barbalat's Lemma}
 \small
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\textbf{Stable}\\
-Given that we do not want the state trajectory $\mathbf{x}(t)$ to get out of a ball $\mathbf{B}_R$, a starting state from within a ball $\mathbf{B}_r$ at a time 0 guarantees that the state will stay within the ball $\mathbf{B}_R$ thereafter.\\
+We use invariant set theorems for autonomous systems to show that once the dynamics enters some region it never escapes, allowing for limit cycle stabilities. This also allows us to draw conclusions when $\dot{V} \leq 0$ (Negative Semi-Definite).\\
 \vspace{6pt}
-\textbf{Unstable}\\
-If there exists at least one ball $\mathbf{B}_R$, such that for every $r>0$ no matter how small, it is always possible for the system trajectory to start somewhere within the ball $\mathbf{B}_r$ and eventually leave the ball $\mathbf{B}_R$
-\end{column}
-\begin{column}{0.5\textwidth}
-\begin{figure}
-\includegraphics[width = 0.8\textwidth]{Figures/Fig33.PNG}
-\end{figure}
-\begin{enumerate}
-\item Asymptotically Stable
-\item Marginally Stable
-\item Unstable
-\end{enumerate}
-\end{column}
-\end{columns}
+But what about non-autonomous systems?\\
+\vspace{6pt}
+\underline{Barbalat's Lemma} is a mathematic result concerning the asymptotic properties of functions and their derivatives, that may assist us for non-autonomous systems.\\
+\vspace{6pt}
+\textbf{Lemma:} If the differentiable function $f(t)$ has a finite limit as $t \rightarrow \infty$, and if $\dot{f}$ is uniformly continuous, then $\dot{f} \rightarrow 0 $ as $t \rightarrow \infty$.
 \end{frame}
 
 \begin{frame}
-\frametitle{Asymptotic Stability and Exponential Stability}
+\frametitle{Lyapunov Analysis using Barbalat's Lemma}
 \small
-An equilibrium point $\mathbf{0}$ is \underline{asymptotically stable} if it is stable, and if in addition there exists some $r>0$ such that $||\mathbf{x}(0)||<r$ implies that $\mathbf{x}(t) \rightarrow \mathbf{0}$ as $t \rightarrow \infty$.\\
-\vspace{6pt}
-An equilibrium point which is \textit{Lyapunov Stable} but not asymptotically stable is called \underline{marginally stable}. (i.e. a stability which does not necessarily approach $\mathbf{0}$ as $t \rightarrow \infty$, but stays within a ball $\mathbf{B}_R$.\\
-\vspace{6pt}
-An equilibrium point $\mathbf{0}$ is \underline{exponentially stable} if there exists two strictly positive numbers $\alpha$ and $\lambda$ s.t.
+\textbf{Definition:} a function $g(t)$ is \underline{continuous} on $
+[0,\infty)$ if:
 \begin{equation*}
-\forall \; t > 0 \; , \; ||\mathbf{x}(t)|| \leq \alpha ||\mathbf{x}(0)|| e^{-\lambda t}
-\end{equation*}
-in some ball $\mathbf{B}_r$ around the origin.\\
-\vspace{6pt}
-Exponential Stability $\Rightarrow$ Asymptotic Stability $\Rightarrow$ Lyapunov Stability\\
-\vspace{6pt}
-If asymptotic (or exponential) stability holds for any initial states, the equilibrium point is said to be asymptotically (or exponentially) stable \underline{in the large}. It is also called \underline{globally} asymptoticly (or exponentially) stable. 
-\end{frame}
-
-\begin{frame}
-\frametitle{Linearization and Local Stability}
-\small
-\textbf{Linearization}\\
-Lyapunov's linearization method is concerned with the local stability of a nonlinear system. Concerning $\mathbf{f(x)} \in C^1$ (Cont. differentiable at least once). The dynamics may be Taylor Series approximated about the equilibrium $\mathbf{x = 0}$:
-\begin{equation*}
-\mathbf{\dot{x}} = \left. \left( \frac{\partial \mathbf{f}}{\partial \mathbf{x}} \right) \right. _{\mathbf{x = 0}}\mathbf{x} + \mathbf{f}_{h.o.t.}(\mathbf{x})
-\end{equation*}
-If we define the Jacobian as $\mathbf{A}$, we have the linear system:
-\begin{equation*}
-\mathbf{\dot{x} = Ax}
-\end{equation*}
-Consider a nonlinear non-autonomous nonlinear system with control $\mathbf{u}$: 
-\begin{equation*}
-\mathbf{\dot{x} = \left. \left( \frac{\partial \mathbf{f}}{\partial \mathbf{x}} \right) \right. _{\mathbf{x=0,u = 0}}\mathbf{x} + \left. \left( \frac{\partial \mathbf{f}}{\partial \mathbf{u}} \right) \right. _{\mathbf{x=0,u = 0}}\mathbf{u} + \mathbf{f}_{h.o.t.}}
-\end{equation*}
-Defining the Jacobians:
-\begin{equation*}
-\mathbf{\dot{x}=Ax+Bu}
-\end{equation*}
-\end{frame}
-
-\begin{frame}
-\frametitle{Linearization and Local Stability}
-\Large
-\textbf{Lyapunov's Linearization Method}\\
-\small
-\begin{itemize}
-\item \textbf{Asymptotically Stable} All $\text{eig}(\mathbf{A}) < 0$\\
-\vspace{6pt}
-If the linearized system is strictly stable (all eigenvalues of $\mathbf{A}$ are strictly in the L.H.P.) then the equilibrium point is asymptotically stable (for the actual nonlinear system)\\
-\vspace{3pt}
-\item \textbf{Unstable} At least one $\text{eig}(\mathbf{A}) > 0$\\
-\vspace{6pt}
-If the linearized system is unstable (i.e. if at least one eigenvalue of $\mathbf{A}$ is strictly in the R.H.P.), then the equilibrium point is unstable (for the nonlinear system).\\
-\vspace{3pt}
-\item \textbf{Indeterminate} At least one eigenvalue is on the $j\omega$ axis.\\
-\vspace{6pt}
-If the linearized system is marginally stable (i.e. all eigenvalues of $\mathbf{A}$ are in the left-hand complex plane, but at least one of them is on the $j\omega$ axis), then on cannot conclude anything form the linear approximation (the equilibrium point may be stable, asymptoticly stable, or unstable for the nonlinear system).
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Linearization and Stability Example}
-\small
-\textbf{Given:}\\
-Let $x_1 = x$ and $x_2 = \dot{x}$. The state space representation is:
-\begin{equation*}
-\begin{aligned}
-\dot{x}_1 &= x_2 = f_1(\mathbf{x})\\
-\dot{x}_2 &= x_1^3sin^3(x_1) - x_1^5 - (x_1-1)^4x_2^7 = f_2(\mathbf{x})
-\end{aligned}
-\end{equation*}
-Determine the stability of the equilibrium point at the origin determined earlier.
-\begin{equation*}
-\mathbf{A} = \frac{\partial \mathbf{f}}{\partial \mathbf{x}} = \begin{bmatrix}
-\frac{\partial f_1}{\partial x_1} & \frac{\partial f_1}{\partial x_2} \\
-\frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2}
-\end{bmatrix}
-\end{equation*}
-Computing:
-\begin{equation*}
-\begin{aligned}
-\frac{\partial f_1}{\partial x_1} &= 0 \;\; \& \;\; \frac{\partial f_1}{\partial x_2} = 1\\
-\frac{\partial f_2}{\partial x_1} &= 3 x_1^2 \sin^3(x_1) - 4 x_2^7 (x_1 - 1)^3 - 5 x_1^4 + 3 x_1^3 \cos(x_1) \sin(x_1)^2
-\\
-\frac{\partial f_2}{\partial x_2} &= -7 x_2^6 (x_1 - 1)^4
-\end{aligned}
-\end{equation*}
-\end{frame}
-
-\begin{frame}
-\frametitle{Linearization and Stability Example}
-\small
-Recall the Linearization was:
-\begin{equation*}
-\tiny
-\mathbf{A} = \begin{bmatrix}
-0 & 1\\
-3 x_1^2 \sin^3(x_1) - 4 x_2^7 (x_1 - 1)^3 - 5 x_1^4 + 3 x_1^3 \cos(x_1) \sin(x_1)^2 & -7 x_2^6 (x_1 - 1)^4
-\end{bmatrix}
-\end{equation*}
-If we evaluate the linearization:
-\begin{equation*}
-\left. \mathbf{A}\right.|_{\mathbf{x}_eq} = \begin{bmatrix}
-0 & 1\\ 0&0
-\end{bmatrix}
-\end{equation*}
-Finding the eigenvalues of $\mathbf{A}$, \texttt{eig}$(\mathbf{A}) = [0,0]$.
-We can not conclude the stability of the origin using the linearization method. Instead we will need to introduce a more rigorous method if we would like to ascertain the stability of the origin for our toy problem.
-\end{frame}
-
-
-\begin{frame}
-\frametitle{Lyapunov's Direct Method}
-\small
-\textbf{Idea:} If the total energy of a mechanical (or electrical system) is continuously dissipated, then the system, whether linear or nonlinear, must eventually settle down to an equilibrium point.\\
-\vspace{6pt}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-The Total Energy of the System:
-\begin{eqnarray*}
-V(x) &=& \frac{1}{2} m \dot{x}^2 + \int_0^x (k_0 x + k_1 x^3) dx\\
-&=& \frac{1}{2}m\dot{x}^2 + \frac{1}{2}k_0 x^2 + \frac{1}{4} k_1 x^4
-\end{eqnarray*}
-- Zero energy corresponds to the equilibrium point ($x = 0, \dot{x} = 0$)\\
-- Asymptotic stability implies the convergence of mechanical energy to zero\\
-- Instability is related to the growth of mechanical energy\\
-\end{column}
-\begin{column}{0.5\textwidth}
-\begin{center}
-\includegraphics[width = 0.4\textwidth]{Figures/Fig36.PNG}
-\end{center}
-Rate of Energy Variation:
-\begin{eqnarray*}
-\dot{V}(x) &=& m \dot{x} \ddot{x} + (k_0 x + k_1 x^3)\dot{x}\\
-&=& \dot{x}(-b\dot{x}|\dot{x}|)\\
-&=& -b |\dot{x}|^3
-\end{eqnarray*}
- The energy of the system, starting from some initial value, is continuously dissipated by the damper until the mass settles down. ($\dot{x}=0$.)
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}
-\frametitle{Positive Definite Functions and Lyapunov Functions}
-The energy function has two properties:
-\begin{itemize}
-\item The Lyapunov functions is strictly positive unless both state variables $x$ and $\dot{x}$ are zero.
-\item the function is monotonically decreasing when the variables $x$ and $\dot{x}$ vary according to the dynamics.
-\end{itemize}
-A scalar continuous function V(x) is said to be \underline{locally positive definite} if $V(0) = 0$ and, in a ball $B_{R_0}$, $\mathbf{x} \neq \mathbf{0} \Rightarrow V(\mathbf{x})>0$\\
-\vspace{6pt}
-If $V(\mathbf{0})=0$ and the above property holds over the whole state space, then $V(\mathbf{x})$ is said to be \underline{globally positive definite}.\\
-For instance, the function of the mechanical energy of a pendulum:\\
-\begin{equation*}
-V(\mathbf{x}) = \frac{1}{2}MR^2 x_2^2 + MRg(1-\cos x_1)
-\end{equation*}
-\end{frame}
-
-\begin{frame}
-\frametitle{Positive Definite Functions and Lyapunov Functions}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\textbf{Shape of Positive Definite Function}\\
-Describing the geometrical meaning of locally positive definite functions. Consider a positive definite function $V(\mathbf{x})$ of two state variables $x_1$ and $x_2$. Plotted in 3-D, $V(\mathbf{x})$ typically corresponds to a surface looking like an upward cup. The lowest point of the cup is located at the origin.
-\end{column}
-\begin{column}{0.5\textwidth}
-\begin{center}
-\includegraphics[width = \textwidth]{Figures/Fig37.PNG}
-\end{center}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}
-\frametitle{Positive Definite Functions and Lyapunov Functions}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\textbf{Level Curves}\\
-A second geometrical representation can be made by taking $x_1$ and $x_2$ as Cartesian coordinates. The level curves $V(x_1,x_2) = V_\alpha$ represent a set of curves corresponding to an energy level. Think of this as a topology graph where each band is a level of energy rather than altitude.
-\end{column}
-\begin{column}{0.5\textwidth}
-\begin{center}
-\includegraphics[width = \textwidth]{Figures/Fig38.PNG}
-\end{center}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}
-\frametitle{Positive Definite Functions and Lyapunov Functions}
-\small
-\begin{columns}
-\begin{column}{0.5\textwidth}
-A few related concepts can be defined for a local or global sense\\
-\vspace{6pt}
-\begin{itemize}
-\item A function $V(\mathbf{x)}$ is \underline{negative definite} if $-V(\mathbf{x})$ is positive definite.
-\item A function $V(\mathbf{x})$ is \underline{semi-definite} if $V(\mathbf{0}) = 0$ and $V(\mathbf{x}) \geq \mathbf{0} \; \forall \; \mathbf{x} \neq \mathbf{0}$.
-\item $V(\mathbf{x})$ is \underline{negative semi-definite} if $-V(\mathbf{x})$ is positive semi-definite
-\end{itemize}
-\vspace{0.6pt}
-Assuming that the scalar function $V(\mathbf{x})$ is implicit in time, we can find its time derivative by the chain rule:
-\begin{equation*}
-\dot{V} = \frac{d V(\mathbf{x})}{d t} = \frac{\partial V}{\partial \mathbf{x}} \mathbf{\dot{x}} = \frac{\partial V}{\partial \mathbf{x}} \mathbf{f(x)}
-\end{equation*}
-\end{column}
-\begin{column}{0.5\textwidth}
-If, in a ball $\mathbf{B}_{R_0}$, the function $V(\mathbf{x})$ is \textit{positive definite} and has continuous partial derivatives, and if its time derivative along any state trajectory of $\mathbf{\dot{x} = f(x)}$ is \textit{negative semi-definite}:
-\begin{equation*}
-\dot{V(}\mathbf{x}) \leq 0
-\end{equation*}
-then $V(\mathbf{x})$ is said to be a \underline{Lyapunov Function} for the system: $\mathbf{\dot{x} = f(x)}$.
-\begin{center}
-\includegraphics[width = 0.7\textwidth]{Figures/Fig39.PNG}
-\end{center}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}
-\frametitle{Equilibrium Point Theorems}
-\small
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\textbf{Thm 3.2 Local Stability:}\\
-If, in a ball $\mathbf{B}_{R_0}$ there exists a scalar function $V(\mathbf{x})$ with continuous first partial derivatives such that:
-\begin{itemize}
-\item $V(\mathbf{x})$ is positive definite (locally in $\mathbf{B}_{R_0}$)
-\item $\dot{V}(\mathbf{x})$ is negative semi-definite (locally in $\mathbf{B}_{R_0}$)
-\end{itemize}
-Then the equilibrium point $\mathbf{0}$ is stable. \\ \vspace{6pt}
-If actually, the derivative $\dot{V}(\mathbf{x})$ is locally \textit{negative definite} in $\mathbf{B}_{R_0}$, then the stability is asymptotic.\\
-\vspace{6pt}
-\textit{Proof in Slotine and Li pp. 62}
-\end{column}
-\begin{column}{0.5\textwidth}
-\textbf{Example: Pendulum Local Stability}\\
-Consider: $\ddot{\theta} + \dot{\theta} + \sin(\theta) = 0$ and the scalar function describing the sum of potential and kinetic energy:
-\begin{equation*}
-V(\mathbf{x}) = (1-\cos\theta)+\dot{\theta}^2/2
-\end{equation*}
-with time derivative:
-\begin{equation*}
-\dot{V(\mathbf{x})} = \dot{\theta} \sin \theta + \dot{\theta} \ddot{\theta} = - \dot{\theta}^2 \leq 0
-\end{equation*}
-The origin is a locally stable equilibrium point. Since $V(\mathbf{x}) \leq 0$ we can not conclude if stability is asymptotic.
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}
-\frametitle{Positive Definite Functions and Lyapunov Functions}
-\small
-\textbf{Example: Asymptotic Stability}\\
-Consider:\\
-\begin{equation*}
-\begin{aligned}
-\dot{x}_1 &= x_1 (x_1^2 + x_2^2 - 2) - 4x_1x_2^2\\
-\dot{x}_2 &= 4x_1^2x_2 + x_2(x_1^2 + x_2^2 - 2)
-\end{aligned}
-\end{equation*}
-Given the Positive Definite Function:
-\begin{equation*}
-V(\mathbf{x}) = x_1^2 + x_2^2
-\end{equation*}
-and its time derivative:
-\begin{equation*}
-\dot{V}(\mathbf{x}) = 2(x_1^2 + x_2^2)(x_1^2 + x_2^2 - 2)
-\end{equation*}
-About the origin, $\dot{V}$ is negative definite and the Thm. dictates that the origin is asymptotically stable.
-\end{frame}
-
-
-\begin{frame}
-\frametitle{Lyapunov Theorem for Global Stability}
-\small 
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\textbf{Theorem: (Global Stability)}\\
-Assume that there exists a scalar function $V$ of the sates $\mathbf{x}$ with continuous first order derivatives such that:
-\begin{itemize}
-\item $V(\mathbf{x})$ is positive definite
-\item $\dot{V}(\mathbf{x})$ is negative definite
-\item $V(\mathbf{x}) \rightarrow \infty$ as $||\mathbf{x}|| \rightarrow \infty$
-\end{itemize}
-then the equilibrium at the origin is \underline{globally asymptotically stable}.\\
-\vspace{6pt}
-The reason for the radial unboundedness condition is to assure that the contour curves correspond to closed curves. 
-\end{column}
-\begin{column}{0.5\textwidth}
-If the curves are not closed state trajectories could drift away from the equilibrium point if the state keeps going through contours corresponding to lower $V_\alpha$.\\
-Consider: $V(\mathbf{x}) = \frac{x_1^2}{1+x_1^2} + x_2^2$\\
-The Curves $V(\mathbf{x}) = V_\alpha$ for $V_\alpha > 1$ are open curves, demonstrating divergence the state while moving toward lower ``energy.''
-\begin{center}
-\includegraphics[width = 0.8\textwidth]{Figures/Fig312.PNG}
-\end{center}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}
-\frametitle{Lyapunov Theorem for Global Stability}
-\textbf{A Class of First Order Systems Example:}\\
-Consider: $\dot{x} + c(x) = 0$, where $c$ is any continuous function of the same sign as its scalar argument $x$. (\textit{odd function}).\\
-\vspace{6pt}
-Consider the Lyapunov Function and its derivative:
-\begin{equation*}
-V = x^2 \;\; \& \;\; \dot{V} = 2 x \dot{x} = -2xc(x)
-\end{equation*}
-The function $V$ is radially unbounded since it tends towards infinity as $|x| \rightarrow \infty$. And the Derivative is negative definite as long as $x \neq 0$.\\
-\vspace{6pt}
-Therefore: the origin $x=0$ is \textit{Globally Asymptotically Stable} equilibrium point.\\
-Note that the global nature implies that the origin is the only equilibrium point.
-\end{frame}
-
-\begin{frame}
-\frametitle{Systems Analysis Based Upon Lyapunov's Direct  Method}
-\textbf{Question:} How do we find a Lyapunov function for a specific probelem?\\
-\textbf{Answer:} There is \underline{no general way} of finding Lyapunov functions for nonlinear systems. \textit{Experience, Intuition, and Physical Insight} are required to search for candidate Lyapunov functions.\\
-\vspace{6pt}
-\textbf{Methods to Assist with Finding Lyapunov Functions}
-\begin{itemize}
-\item Lyapunov Analysis of LTI Systems
-\item Krasovskii's Method
-\item Variable Gradient Method
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Matrix Mathematics Reminder}
-\small
-\textbf{Square Symmetric Matrix}\\
-A square matrix is \underline{symmetric} iff a square matrix $M$ satisfies the following:\\
-\begin{equation*}
-\mathbf{M} = \mathbf{M^T}
-\end{equation*}
-\textbf{Square Skew Symmetric Matrix}\\
-A square matrix is \underline{skew-symmetric} iff a square matrix $M$ satisfies the following:\\
-\begin{equation*}
-\mathbf{M} = -\mathbf{M^T}
-\end{equation*}
-\textbf{Composition of a Square Matrix}\\
-Any square matrix, $\mathbf{M}$ may be composed into its symmetric and skew-symmetric parts:
-\begin{equation*}
-\mathbf{M} = \frac{\mathbf{M}+\mathbf{M^T}}{2} + \frac{\mathbf{M} - \mathbf{M^T}}{2}
-\end{equation*}
-\end{frame}
-
-\begin{frame}
-\frametitle{Matrix Mathematics Reminder}
-\small
-\textbf{Necessary and Sufficient Criteria for Skew-Symmetric Matrix}\\
-The quadratic function associated with a skew-symmetric matrix is always zero. If $\mathbf{M}$ is a square skew-symmetric matrix then:
-\begin{equation*}
-\mathbf{x^TMx} = \mathbf{-x^TMx} = \mathbf{0} \; \forall \; \mathbf{x} \in \mathbb{R}^n , \mathbf{M} \in \mathbb{R}^{n \times n}
-\end{equation*}
-\vspace{6pt}
-
-\textbf{Positive Definite Matrix}\\
-A square matrix $\mathbf{M}$ is positive definite if
-\begin{equation*}
-\lbrace \mathbf{x^TMx} > 0 | \; \forall \; \mathbf{x \neq 0} \in \mathbb{R}^n , \mathbf{M} \in \mathbb{R}^{n \times n} \rbrace
+\forall \; t_1 \geq 0, \; \forall \; R > 0, \; \exists \; \eta(R,t_1)>0, \forall \; t \geq 0, \; |t-t_1| < \eta \Rightarrow |g(t) - g(t_1)| < R
 \end{equation*}\\
-We can also say a necessary condition is that all the minors of $\mathbf{M}$ are strictly positive.
+\textbf{Definition:} a function $g(t)$ is \underline{uniformly continuous} on $
+[0,\infty)$ if:
+\begin{equation*}
+\forall \; R \geq 0, \; \exists \; \eta(R) > 0, \; \forall \; t_1 \geq 0, \forall \; t \geq 0, \; |t-t_1| < \eta \Rightarrow |g(t) - g(t_1)| < R
+\end{equation*}
+A function is uniformly continuous if one can always find an $\eta$ which does not depend on the specific point $t_1$. And the $\eta$ does not shrink as $t_1 \rightarrow \infty$.\\
 \vspace{6pt}
+\textbf{Definition:} Finite Difference Thm. (So long as a derivative is bounded a function is uniformly continuous).
+\begin{equation*}
+\forall \; t, \forall \; t_1, \exists \; t_2 | (t \leq t_2 \leq t_1) \quad \ni  \quad g(t) - g(t_1) = \dot{g}(t_2) (t - t_1)
+\end{equation*}
+Therefore if $M>0$ is an upper bound on the function $|\dot{g}|$, one can always use $\eta = R/M$ to verify \underline{uniform continuity}.
 \end{frame}
 
 \begin{frame}
-\frametitle{Lyapunov Analysis of LTI Systems}
-\small
-Given a Linear Time-Invariant System:
-\begin{equation*}
-\mathbf{\dot{x} = Ax} \; | \; \mathbf{x}\in\mathbb{R}^n , \mathbf{A}\in\mathbb{R}^{n\times n}
-\end{equation*}
-Consider the quadratic Lyapunov function candidate, with $\mathbf{P}$ symmetric and positive definite:
-\begin{equation*}
-\mathbf{V = x^T P x} \; | \; \mathbf{P} = \mathbf{P}^T , \mathbf{P>0}
-\end{equation*}
-Taking the time derivative:
-\begin{equation*}
-\begin{aligned}
-\mathbf{\dot{V}} &= \mathbf{\dot{x}^T P x + x^T\dot{P}x + x^T P\dot{x}}\\
-&= \mathbf{\dot{x}^T P x + x^T P\dot{x}}\\
-&= \mathbf{(x^T A^T) P x + x^T P (A x)}\\
-&= \mathbf{x^T (A^T P +  P A) x}\\
-&= -\mathbf{x^T Q x}
-\end{aligned}
-\end{equation*}
-$\mathbf{Q} >0 \Rightarrow$  the origin is Globally Asymptotically Stable (GAS).
-\end{frame}
-
-\begin{frame}
-\frametitle{Example Lyapunov Analysis of LTI Systems}
-\small
-Given a Linear Time-Invariant System:
-\begin{equation*}
-\mathbf{\dot{x} = \begin{bmatrix}
-0 & 4 \\ -8 & -12
-\end{bmatrix}x}
-\end{equation*}
-Let us choose a positive definite $\mathbf{Q}$, then solve for the $\mathbf{P}$ using:
-\begin{equation*}
-\mathbf{A^T P + P A = -Q}
-\end{equation*}
-satisfying the quadratic form we then determine if $\mathbf{P}>0$:
-\begin{equation*} 
-\begin{bmatrix}
-p_{11} & p_{12}\\p_{21} & p_{22}
-\end{bmatrix} 
-\begin{bmatrix}
-0 & 4 \\ -8 & -12
-\end{bmatrix}
-+
-\begin{bmatrix}
-0 & -8 \\ 4 & -12
-\end{bmatrix}
-\begin{bmatrix}
-p_{11} & p_{12}\\p_{21} & p_{22}
-\end{bmatrix}  = 
-\begin{bmatrix}
--1 & 0 \\ 0 & -1\end{bmatrix} 
-\end{equation*}
-\begin{equation*}
-\begin{aligned}
--8 p_{12} - 8 p_{21} &= -1\\
-4 p_{11} -12 p_{12} - 8 p_{22} &= 0\\
--8 p_{22} + 4 p_{11} -12 p_{21} & = 0\\
-4 p_{21} -12 p_{22} + 4 p_{12} -12 p_{22} &= -1
-\end{aligned}
-\end{equation*}
-Solving 
-\begin{equation*}
-\mathbf{P} = \begin{bmatrix}
-5/16 & 1/16 \\
-1/16 & 1/16
-\end{bmatrix}
-\end{equation*}
-$\mathbf{P} >0 \therefore$  the origin is Globally Asymptotically Stable (GAS).
-\end{frame}
-
-\begin{frame}
-\frametitle{Krasovskii's Method}
-\small
-\textbf{Consider:} $\mathbf{\dot{x} = f(x)}$ with equilibrium at the origin.\\
-\vspace{6pt}
-We are going to choose a quadratic function $V = \mathbf{f^T(x) f(x)}$ and check whether this particular choice leads to a \underline
-{Lyapunov function}\\
-\vspace{6pt}
-Taking the time derivative of the Lyapunov Function Candidate:
-\begin{equation*}
-\begin{aligned}
-\dot{V}(\mathbf{x}) = \mathbf{\dot{f}^T(x)f(x)} + \mathbf{f^T(x)\dot{f}(x)}
-\end{aligned}
-\end{equation*}
-If we define $\mathbf{A} = \frac{\partial f}{\partial x}$ be the Jacobian, then:
-\begin{equation*}
-\begin{aligned}
-\dot{V}(\mathbf{x}) &= \frac{\partial f}{\partial x} \frac{dx}{dt} = \mathbf{A}(\mathbf{x})\dot{\mathbf{x}}\\
-&= \mathbf{f^T(x)(A+A^T)f(x)}
-\end{aligned}
-\end{equation*}
-If the matrix $\mathbf{F = A+A^T}$ is negative definite in the neighborhood $\mathbf{\Omega}$ then the equilibrium point at the origin is \underline{asymptotically stable}.\\
-\vspace{6pt}
-Further if $\mathbf{F}<0$ and $||\mathbf{x}|| \rightarrow \infty
-$ as $V(\mathbf{x}) \rightarrow \infty$, then the equilibrium is \underline{Globally Asymptotically Stable}.
-\end{frame}
-
-\begin{frame}
-\frametitle{Krasovskii's Method}
-\small
-\textbf{Downsides:}
+\frametitle{Lyapunov Analysis using Barbalat's Lemma}
+\footnotesize
+If a scalar function $V(\mathbf{x},t)$ satisfies the following:
 \begin{itemize}
-\item $\mathbf{F}$ may not be negative definite
-\item For higher order systems, tough to check $\mathbf{F} < 0 \; \forall \; \mathbf{x}$
+\item $V(\mathbf{x},t)$ is lower bounded
+\item $\dot{V}(\mathbf{x},t)$ is negative semi- definite
+\item $\dot{V}(\mathbf{x},t)$ is uniformly continuous in time
 \end{itemize}
-\textbf{Example:}
-\begin{equation*}
-\begin{aligned}
-\dot{x}_1 &= -6 x_1 + 2x_2\\
-\dot{x}_2 &= 2 x_1  - 6x_2 - 2x_2^3
-\end{aligned}
-\end{equation*}
-From this:
-\begin{equation*}
-\mathbf{A(x)} = \frac{\partial \mathbf{f}}{\partial \mathbf{x}} = \begin{bmatrix}
--6 & 2\\2 & -6 - 6x_2^2
-\end{bmatrix} \quad \& \quad \mathbf{F = A+ A^T} = \begin{bmatrix}
--12 & 4\\4 & -12 -12 x_2^2
-\end{bmatrix}
-\end{equation*}
-Looking at the determinate, it is easy to show that the function $\mathbf{F}$ is \underline{negative definite} for all $\mathbf{x}$. \\
+then $\dot{V}(\mathbf{x},t) \rightarrow 0$ as $t \rightarrow \infty$.\\
 \vspace{6pt}
-The Lyapunov Function is: 
+\textbf{Barbalat's Lemma Example:} Consider:
 \begin{equation*}
 \begin{aligned}
-V(\mathbf{x}) &= 
-\begin{bmatrix}
--6 x_1 + 2x_2 &
-2 x_1 - 6x_2 - 2x_2^3
-\end{bmatrix}
-\begin{bmatrix}
--6 x_1 + 2x_2 \\
-2 x_1 - 6x_2 - 2x_2^3
-\end{bmatrix}\\
- &= (-6 x_1 + 2x_2)^2 + (2 x_1 - 6 x_2 - 2x_2^3)^2
+\dot{e} &= -e + g u(t)\\
+\dot{g} &= -e u(t)
 \end{aligned}
 \end{equation*}
-Since $V \rightarrow \infty$ as $||\mathbf{x}|| \rightarrow \infty$ the origin is GAS.
+This function is non-autonomous because of some input, $u(t)$, is a function of time. Assuming that the input has some bounds:
+\begin{equation*}
+V = e^2 + g^2 \Rightarrow \dot{V} = 2e(-e+gu) + eg(-eu) = -2e^2 \leq 0
+\end{equation*}
+This implies that $V(t) \leq V(0)$, and therefore, that \underline{$e$ and $g$ are bounded}. But the invariant set thm. can not be used because the dynamics are non-autonomous.\\
+Using Barbalat's Lemma, let us check the uniform continuity of $\dot{V}$.
+\begin{equation*}
+\ddot{V} = -4e(-e+gu)
+\end{equation*}
+This shows that $\dot{V}$ is bounded since u is bounded, $e$ and $g$ were shown to be bounded. Then $\dot{V}$ is unif. cont. $\therefore$ $e \rightarrow 0 $ as $t \rightarrow \infty$
 \end{frame}
 
+
 \begin{frame}
-\frametitle{Variable Gradient Method}
+\frametitle{Floquet Theory}
+\footnotesize
+\textbf{Floquet Theory} 
+Consider the linear system $\dot{x} = A(t) x$, were $A(t) = A(t+T)$. \textit{There is some periodic nature in the linear system $A(t)$ with periodicity $T$}, and let $\Phi(t)$, be the state transition matrix. Then $\forall \; t \in \mathbb{R}$,
+\begin{equation*}
+\Phi(t+T) = \Phi(t)\Phi^{-1}(0)\Phi(T)
+\end{equation*}
+For each matrix $\mathbf{B}$ (possibly complex) such that:
+\begin{equation*}
+e^{T B} = \Phi^{-1}(0)\Phi(T)
+\end{equation*}
+There is a periodic (period $T$) matrix function $ \mathbf{P}(t)$ such that:
+\begin{equation*}
+\Phi(t) = \mathbf{P}(t)e^{t\mathbf{B}} \; \forall \; t \in \mathbb{R}
+\end{equation*}
+Also, there is a real matrix $\mathbf{R}$ and real periodic (period $2T$) matrix function $\mathbf{Q}(t)$ such that:
+\begin{equation*}
+\Phi(t) = \mathbf{Q}(t) e^{t \mathbf{R}} \; \forall \; t \in \mathbb{R}
+\end{equation*}
+This mapping $\Phi(t) = \mathbf{Q}(t)e^{t\mathbf{R}}$ gives rise to a time-dependent change of coordinates $(y=\mathbf{Q}^{-1}(t)x)$ under which our original system becomes a linear system with real constant coefficients $\dot{y} = \mathbf{R}y$. Since $Q(t)$ is continuous and periodic, it must be bounded. Thus the stability of the zeor solution for $y(t)$ and $x(t)$ is determined by the eigenvalues of $\mathbf{R}$.
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Floquet Theory}
 \small
-The \underline{Variable Gradient Method} is a \textit{Formal Approach} to construction Lyapunov functions. In involves assuming a form for the gradient of an unknown Lyapunov function, and then finding the Lyapunov function itself by integrating the assumed gradient.\\
+The representation $\Phi(t) = P(t)e^{tB}$ us called the \textit{Floquet normal form} for the fundamental matrix: $\Phi(t)$.\\
 \vspace{6pt}
-For a Scalar Function:
-\begin{equation*}
-\dot{\mathbf{x}} = \lbrace \left. f(\mathbf{x}) \Rightarrow x_i = f_i(\mathbf{x}) \;  | \; i = \lbrace 1,2,\; ... \;, n \rbrace \right. \rbrace
-\end{equation*}
-Given, $V(\mathbf{x}) \in C^1$ (continuously differentiable at least once) then:
-\begin{equation*}
-\dot{V}(\mathbf{x}) = \left[ \frac{\partial V}{\partial \mathbf{x}}\right] \dot{\mathbf{x}} = \sum_i  \frac{\partial V}{\partial x_i} \dot{x}_i = \sum_i \frac{\partial V}{\partial x_i} f_i(\mathbf{x}) = g\mathbf{^T}(\mathbf{x})\mathbf{f(x)}
-\end{equation*}
-Where: $g(\mathbf{x}) = \nabla V(\mathbf{x})$.
-\end{frame}
-
-\begin{frame}
-\frametitle{Variable Gradient Method}
-\small
-Remember, we get to pick $g(\mathbf{x})$ to get a unique scalar function $V(\mathbf{x})$.\\
+Floquet theory shows stability in \textit{Hill differential equations}, used in approximating the motion of the moon as a harmonic oscillator in a periodic gravitational field. -Wikipedia\\
+Since $\Phi(0) = I_n$, we have $P(0) = I_n = P(T)$, hence $\Phi(T) = exp(RT)$.\\
 \vspace{6pt}
-Using the Vector Gradient Method, $V(\mathbf{x})$ must satisfy the \textbf{Curl Conditions}:
-\begin{equation*}
-\frac{\partial \nabla V_i}{\partial x_j} = \frac{\partial \nabla V_j}{\partial x_i} \quad , (i,j = 1,2,...,n)
-\end{equation*}
-or in terms of $g(\mathbf{x})$
-\begin{equation*}
-\frac{g_i(\mathbf{x)}}{\partial x_j} = \frac{\partial g_j (\mathbf{x})}{\partial x_i} \quad , (i,j = 1,2,...,n)
-\end{equation*}
-The \textbf{Curl Conditions} imply that the integration of $\dot{V}$ to $V$ will be independent of integration path. The integration is as follows:
-\begin{equation*}
-\begin{split}
-V(\mathbf{x}) =& \int_0^{x_1} g_1(\chi_1,0,...,0) d\chi_1 +  \int_0^{x_2} g_2(\chi_1,\chi_2,...,0) d\chi_2 + \\  & \quad \int_0^{x_n} g_n(\chi_1,\chi_2,...,\chi_n) d\chi_n
-\end{split}
-\end{equation*}
-So all we need is  $g(\mathbf{x})$, the gradient. Let's select $g_i(\mathbf{x}) = \sum_{j = 1}^{n} a_{ij} x_j$ where $a_{ij}$ are selected to satisfy the curl conditions.
+The eigenvalues of the constant matrix $e^{RT}$, called the Floquet multipliers and describe the behavior (stability) of the period nature of $x(t)$.\\
 \end{frame}
 
 \begin{frame}
-\frametitle{Vector Gradient Method}
-\small
-\textbf{Example:}
+\frametitle{Power Form and Passivity Formalism}
+\textbf{Power Form and Passivity}\\
+Lyapunov functions are generalizations of the notion of energy in a dynamic system. \underline{Passivity} is a formalization describing Lyapunov functions composed of \textit{subsystems}.\\
+Consider the conservation of energy formula:
 \begin{equation*}
-\begin{aligned}
-\dot{x}_1 &= -2 x_1\\
-\dot{x}_2 &= -2 x_2 + 2x_1 x_2 ^2
-\end{aligned}
+\frac{d}{dt}(\text{Stored Energy}) = \text{Net External Power In} + \text{Power Generated Internally}
 \end{equation*}
-Selecting the gradient function $g_i(\mathbf{x}) = \sum_{j = 1}^{n} a_{ij} x_j$ where $a_{ij}$ are selected to satisfy the curl
+Putting this into Lyapunov like terms, (i.e.) \underline{Power Form}:
 \begin{equation*}
-\begin{aligned}
-g_1(\mathbf{x}) &= a_{11} x_1 + a_{12} x_2\\
-g_2(\mathbf{x}) &= a_{21} x_1 + a_{22} x_2
-\end{aligned}
+\dot{V}_1(t) = y_1^T u_1 - g_1(t)
 \end{equation*}
-Satisfying the Curl Conditions:
-\begin{equation*}
-\frac{\partial g_1}{\partial x_2} = \frac{\partial g_2}{\partial x_1} \Rightarrow a_{12} + x_2 \frac{\partial a_{12}}{\partial x_2} = a_{21} +  x_1 \frac{\partial a_{21}}{\partial x_1} 
-\end{equation*}
-If we select $a_{12} = a_{21} = 0$ and let $a_{11} = a_{22} = 1$, then:
-\begin{equation*}
-\begin{aligned}
-g_1(\mathbf{x}) &= x_1\\
-g_2(\mathbf{x}) &= x_2
-\end{aligned}
-\end{equation*}
-Now: $\dot{V}(\mathbf{x}) = \mathbf{g^T f} = \begin{bmatrix}
-x_1 & x_2
-\end{bmatrix}
-\begin{bmatrix}
--2 x_1 \\ -2 x_2 + 2 x_1 x_2^2
-\end{bmatrix} = -2x_1^2 - 2x_2^2 (1-x_1x_2)$
+where $y_1$ is the output of a dynamic system, $u_1$ is the input of the dynamic system.\\
 \end{frame}
 
-
 \begin{frame}
-\frametitle{Vector Gradient Method}
+\frametitle{Power Form and Passivity Formalism}
 \small
-\textbf{Example Cont.}
-\begin{equation*}
-\dot{V}(\mathbf{x}) = \mathbf{g^T f} = \begin{bmatrix}
-x_1 & x_2
-\end{bmatrix}
-\begin{bmatrix}
--2 x_1 \\ -2 x_2 + 2 x_1 x_2^2
-\end{bmatrix} = -2x_1^2 - 2x_2^2 (1-x_1x_2)
-\end{equation*}
-So for \underline{Negative Definite} $\dot{V}$ we need $(1-x_1 x_2)>0$ As long as we stay in this domain, then $\dot{V}$ will be negative definite.\\
+If we define the ``Power Flow'' to be the multiplication between our input $u$ and output $y$. We say a system is passive so long as $y^Tu \geq 0 $. (i.e. the power flow is always positive). \\
 \vspace{6pt}
-Integrating:
-\begin{equation*}
-V(\mathbf{x}) = \int_0^{x_1} \chi_1 d\chi_1 + \int_0^{x_2} \chi_2 d\chi_2 = \frac{1}{2}(x_1^2 + x_2^2)
-\end{equation*}
-This is obviously P.D. and therefore this system is \underline{Locally Asymptotically Stable} in the Domain: $(1-x_1x_2)>0$\\
+We can abstract the concept of power flow by looking at the \textit{u-y} graph. Where the y-axis is the output and the x-axis is the input. For this graph a passive system will only occupy the quadrants (I and III).\\
 \vspace{6pt}
-\textbf{Example With Functions for $a_{ij}$}
-Recall that we saw that $a_{ij}$ took values of constants, but what if they were function of the states?\\
-\end{frame}
 
-\begin{frame}
-\frametitle{Vector Gradient Method}
-\small
-\textbf{Example:}
-\begin{equation*}
-\begin{aligned}
-\dot{x}_1 &= -2 x_1\\
-\dot{x}_2 &= -2 x_2 + 2x_1 x_2 ^2
-\end{aligned}
-\end{equation*}
-Selecting the gradient function $g_i(\mathbf{x}) = \sum_{j = 1}^{n} a_{ij} x_j$ where $a_{ij}$ are selected to satisfy the curl
-\begin{equation*}
-\begin{aligned}
-g_1(\mathbf{x}) &= a_{11} x_1 + a_{12} x_2\\
-g_2(\mathbf{x}) &= a_{21} x_1 + a_{22} x_2
-\end{aligned}
-\end{equation*}
-Satisfying the Curl Conditions:
-\begin{equation*}
-\frac{\partial g_1}{\partial x_2} = \frac{\partial g_2}{\partial x_1} \Rightarrow a_{12} + x_2 \frac{\partial a_{12}}{\partial x_2} = a_{21} +  x_1 \frac{\partial a_{21}}{\partial x_1} 
-\end{equation*}
-If we select $a_{11} = 1$, $a_{12} = x_2^2$,  $a_{21} = 3x_2^2$, and let $a_{22} = 3$, then the curl equations yield:
-\begin{equation*}
-\begin{aligned}
-x_2^2 + x_2(2 x_2) = 3 x_2^2 + x_1(0) \quad \checkmark
-\end{aligned}
-\end{equation*}
-The gradients are therefore:
-\begin{equation*}
-\begin{aligned}
-g_1(\mathbf{x}) &= x_1 + x_2^3\\
-g_2(\mathbf{x}) &= 3x_1 x_2^2 + 3x_2
-\end{aligned}
-\end{equation*}
-\end{frame}
-
-\begin{frame}
-\frametitle{Vector Gradient Method}
-The Lyapunov Function Rate:\\
-\begin{equation*}
-\begin{split}
-\dot{V}(\mathbf{x}) &= \mathbf{g^Tf} = \begin{bmatrix}
-x_1 + x_2^3 & 3 x_1x_2^2 + 3x_2
-\end{bmatrix}\begin{bmatrix}
--2x_1\\ -2x_2 + 2x_1x_2^2
-\end{bmatrix}\\
-&= -2x_1(x_1+x_2^3) - (2x_2+2x_1x_2^2)(3x_1x_2^2 + 3x_2)\\
-&= -2x_1^2 -2x_1x_2^3 - 6x_1x_2^3 - 6x_2^2 - 6x_1^2x_2^4 - 6x_1x_2^3
-\end{split}
-\end{equation*}
-Which is Negative Definite. Integrating we may obtain the Lyapunov Function:
-\begin{equation*}
-V = x_1^2/2 + 3/2 x_2^2 + x_1 x_2^3
-\end{equation*}
-So we have an Asymptotically Stable Equilibrium at the origin.
-\end{frame}
-
-\begin{frame}
-\frametitle{Vector Gradient Method}
-\textbf{Procedure:}
+\textbf{Definition:} A system is:
 \begin{enumerate}
-\item Assume that $g(\mathbf{x})$ has a certain form with undetermined coefficients. ``Hard Part''
-\item Solve for the coefficients by satisfying the curl conditions
-\item Restrict coefficients so that $\dot{V}(\mathbf{x})$ is negative semi-definite (at least locally)
-\item Compute $V(\mathbf{x})$ using integration equation
-\item Check if $V(\mathbf{x})$ is Positive Definite
+\item passive if $y^Tu \geq 0$
+\item lossless if $y^Tu  = 0$
+\end{enumerate}
+
+\end{frame}
+
+% \begin{frame}
+% \frametitle{Power Form and Passivity Formalism}
+% \small
+
+% \end{frame}
+
+\begin{frame}
+\frametitle{Power Form and Passivity Formalism}
+\footnotesize
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\textbf{Block Combinations \& Power Form}\\
+Both parallel and feedback combinations of systems in the power form are still in the power form
+\begin{equation*}
+\mathbf{y^Tu = y_1^Tu_1+y_2^Tu_2}
+\end{equation*}
+We have the overall system to be:
+\begin{equation*}
+V = V_1 + V_2 \quad g = g_1 + g_2
+\end{equation*}
+More importantly, the combination of any system in power form in either feedback or parallel configuration is in power form determined by the sum of the systems:
+\begin{equation*}
+V = \sum_i V_i \quad g = \sum_i g_i
+\end{equation*}
+
+\end{column}
+\begin{column}{0.5\textwidth}
+\centering
+\includegraphics[width = \linewidth]{Figures/Feedback.PNG}\\
+Feedback Block Combination
+\begin{equation*}
+\begin{aligned}
+&\mathbf{y^T u} = \mathbf{y_1 ^T ( u_1 + y_2 )}\\
+&= \mathbf{ y_1^T u_1 + y_1^T y_2}\\
+&= \mathbf{ y_1^T u_1 + u_2^T y_2 }
+\end{aligned}
+\end{equation*}
+\includegraphics[width = \linewidth]{Figures/Parallel.PNG}\\
+Parallel Block Combination
+\begin{equation*}
+\begin{aligned}
+&\mathbf{y^T u} = \mathbf{(y_1  +y_2)^T u}\\
+&= \mathbf{ y_1^T u + y_2^T u}\\
+&= \mathbf{ y_1^T u_1 + y_2^T u_2 }
+\end{aligned}
+\end{equation*}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Positive Linear Systems}
+\small
+It is often possible to decompose a system into linear and nonlinear parts (Think Taylor Series Expansion). If the transfer function of the linear system is \underline{positive real}, then it has important properties that may lead to a Lyapunov function for the entire system.\\
+\vspace{6pt}
+Consider the $n^{th}$ order system with real coefficients in the numerator and denominator; $n \geq m$, where $n-m$ is the relative degree:
+\begin{equation*}
+h(s) = \frac{b_m s^m + b_{m-1}s^{m-1} + \cdots + b_0}{s^n + a_{n-1}s^{n-1} + \cdots + a_0}
+\end{equation*}
+\textbf{Definition:} A transfer function is \underline{Positive Real} if:
+\begin{equation*}
+\textrm{Re[} h(s)\text{]} \geq 0 \; \forall \; \text{Re}[s] \geq 0
+\end{equation*}
+It is strictly positive real if $h(s - \varepsilon)$ is positive real for some $\varepsilon >0$.
+\textbf{Example: Positive Real Transfer Function}\\
+\begin{equation*}
+h(s) = \frac{1}{s+a}
+\end{equation*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Positive Linear Systems}
+\footnotesize
+$h(s) = \frac{1}{s+a}$ is the transfer function for a first order system. With $a>0$, corresponding to the complex variable $s = \sigma + j \omega$.
+\begin{equation*}
+h(s) = \frac{1}{(\sigma + a) + j\omega} = \frac{\sigma + a - j\omega}{(\sigma + a)^2 + \omega^2}
+\end{equation*}
+Looking at the real part: $\text{Re}[h(s)] \geq 0$ if $\sigma \geq 0$. Thus $h(s)$ is a positive real function. In fact, $h(s)$ is strictly positive real. For example: by choosing $\varepsilon = a/2$.\\
+\vspace{6pt}
+Note that this can be difficult to perform for higher order systems.\\
+\vspace{6pt}
+\textbf{Theorem}: A transfer function is strictly positive real (SPR) iff
+\begin{enumerate}
+\item $h(s)$ is a strictly stable transfer function
+\item the real part of $h(s)$ is strictly positive along the $j\omega$ axis $\forall \; \omega \geq 0, \text{Re}[h(j\omega)] >0$.
+\end{enumerate}
+The Necissary conditions for SPR are:
+\begin{itemize}
+\item $h(s)$ is strictly stable
+\item Nyquist plot $h(j\omega)$ lies entirely in the right-half complex plane
+\item $h(s)$ has relative degree of $0$ or $1$.
+\item $h(s)$ is strictly minimum phase (all zeros in the left-half complex plane)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Positive Linear Systems}
+\small
+\textbf{Examples:}
+\begin{equation*}
+\begin{aligned}
+h_1(s) = \frac{s-1}{s^2 + as +b} \quad h_2(s) = \frac{s+1}{s^2 - s +1} \\
+h_3(s) = \frac{1}{s^2 + as + b} \quad h_4(s) = \frac{s+1}{s^2 + s+ 1} \quad h_5(s) = \frac{1}{s}
+\end{aligned}
+\end{equation*}
+\begin{enumerate}
+\item $h_1(s)$ is not minimum phase since it contains a zero in the right-half complex plane. This precludes $h_1(s)$ from meeting the necessary conditions to be \textit{Strictly Positive Real}.\\
+\item $h_2$ is not stable since the poles do not all lie in the left-half complex plane. $\frac{1}{2} \pm \sqrt(5)$ are the poles.
+\item $h_3(s)$ has relative degree greater than 1.
+\item $h_4(j \omega) = \frac{j \omega + 1}{-\omega^2 + j\omega +1} = \frac{[j \omega + 1][- \omega^2 - j \omega + 1]}{[1 - \omega^2]^2 + \omega^2}$ and $\text{Re}[h_4(j\omega)] = \frac{-\omega^2 + 1 + \omega^2}{[1 - \omega^2]^2 + \omega^2} = \frac{1}{[1 - \omega^2]^2 + \omega^2} \quad \checkmark$
+\item $h_5(s) = \frac{1}{s}$ is an integrator. $h(s = \sigma + j\omega) = \frac{\sigma - j\omega}{\sigma^2 + \omega^2}$. This is positive real, but not strictly positive real.
 \end{enumerate}
 \end{frame}
 
 \begin{frame}
-\frametitle{Example: Pendulum with Friction}
+\frametitle{Kalman-Yakubovich Lemma}
 \small
-\textbf{State Space:}
+A transfer function of a system in \textit{Strictly Positive Real} (SPR) if the following holds. Consider a controllable LTI system. (i.e.) the controllability matrix has full rank: 
+\begin{equation*}
+C = [B \;  AB \;  A^2B \;  \cdots \; A^{n-1}B]
+\end{equation*}
+and for the system:
 \begin{equation*}
 \begin{aligned}
-\dot{x}_1 &= x_2\\
-\dot{x}_2 &= -\frac{g}{l}\sin x_1 - b x_2
+\dot{x} &= Ax + bu\\
+y &= c^T x
 \end{aligned}
 \end{equation*}
-\textbf{Step 1: Assume that $g(\mathbf{x})$ has a certain form with undetermined coefficients.}\\
+The transfer function $h(s) = C^T[sI - A]^{-1}b$ is strictly positive real iff:
 \begin{equation*}
-\begin{aligned}
-g_i(\mathbf{x}) &= \sum_{j=1}^{n} a_{ij} x_j\\
-g_1(\mathbf{x}) &= a_{11} x_1 + a_{12} x_2\\
-g_2(\mathbf{x}) &= a_{21} x_1 + a_{22} x_2
-\end{aligned}
-\end{equation*}
-\textbf{Step 2: Solve for the coefficients by satisfying the curl conditions}
-\begin{equation*}
-\begin{aligned}
-\frac{\partial g_1}{\partial x_2} = \frac{\partial g_2}{\partial x_1} = a_{12} = a_{21} = \textrm{Const.}
-\end{aligned}
+\exists \; P>0, \exists Q >0 \ni A^T P + P A = -Q \; \& \; Pb = c
 \end{equation*}
 \end{frame}
 
-\begin{frame}
-\frametitle{Example: Pendulum with Friction}
-\small
-\textbf{Step 3: Restrict coefficients so that $\dot{V}(\mathbf{x})$ is negative semi-definite}
-\begin{equation*}
-\begin{aligned}
-&\dot{V}(\mathbf{x}) = \mathbf{g^T f}\\
-&= a_{11} x_1 x_2 + a_{12} x_2^2 + ( a_{12} x_1 + a_{22} x_2 ) ( - \frac{g}{l} \sin x_1 - b x_2)\\
-&= a_{11} x_1 x_2 + a_{12} x_2^2 - b a_{12} x_1 x_2 - b a_{22} x_2^2 - \frac{g}{l} a_{12} x_1 \sin x_1 - \frac{g}{l} a_{22} x_2 \sin x_1\\
-&=(a_{11}-b a_{12}) x_1 x_2 + (a_{12}-b a_{22}) x_2^2 - a_{12} \frac{g}{l} x_1 \sin x_1 - a_{22} \frac{g}{l} x_2 \sin x_1
-\end{aligned}
-\end{equation*}
-To keep $\dot{V}(\mathbf{x}) \leq 0$ we need to get rid of cross terms:
-\begin{equation*}
-\begin{aligned}
-(a_{11} - b a_{12} = 0) & \quad \text{$x_1 x_2$ term disappear} \\
-a_{22} = 0 & \quad \text{$x_2 \sin x_1$ term disappear}\\
-a_{11} - b a_{22} < 0 & \quad  \text{Because $x_2^2$ is P.D.}
-\end{aligned}
-\end{equation*}
-Only way is to make the coefficients all zero. Which is bad! We will need a different $g(\mathbf{x})$.
-\end{frame}
 
-\begin{frame}
-\frametitle{Example Pendulum with Friction}
-\small
-\textbf{Step 1: Assume that $g(\mathbf{x})$ has a certain form with undetermined coefficients}. We will have to add a trig term to one or both of the $g_i(\mathbf{x})$'s. Let's try:
-\begin{equation*}
-\begin{aligned}
-g_1(\mathbf{x}) &= a_{11}x_1 + \frac{g}{l} \sin x_1 + a_{12}x_2\\
-g_2(\mathbf{x}) &= a_21 x_1 + a_22 x_2
-\end{aligned}
-\end{equation*}
-Note that if we put $(g / l) \sin x_1$ in $g_2(\mathbf{x})$ we look at the the constraints on the curl condition which are unchanged.
-\begin{equation*}
-a_{12} = a_{21} \quad \checkmark
-\end{equation*}
-The rate change:
-\begin{equation*}
-\begin{aligned}
-\dot{V}&(\mathbf{x}) = \mathbf{g^T f}\\
-&= \begin{bmatrix}
-a_{11} x_1 + a_{12} x_2 + g/l \sin x_1 & a_{12} x_1 + a_{22} x_2
-\end{bmatrix}
-\begin{bmatrix}
-x_2 \\ -(g / l) \sin x_1 -b x_2
-\end{bmatrix}\\
-&= (a_{11} - b a_{12})x_1 x_2 + (a_{12}- b a_{22})x_2^2 + \\
-&\quad(g/l - a_{22} g/l)x_2 \sin x_1 - a_{12}(g/l) _1 \sin x_1
-\end{aligned}
-\end{equation*}
-\end{frame}
+% \begin{frame}
+% \frametitle{The Passivity Formalism}
+% \small
 
-\begin{frame}
-\frametitle{Example: Pendulum with Friction}
-\small
-And to keep $\dot{V}(\mathbf{x}) < 0$ we put $a_{11} = b a_{12}$, $a_{22} = 1$ , and $a_{12}<b$ and $a_{12}>0$ with these restrictions:
-\begin{equation*}
-\dot{V}(\mathbf{x}) = (a_{12} - b)x_2^2 - (g/l)a_{12} x_1 \sin x_1 <0 \quad (x_1 \in (- \pi , \pi))
-\end{equation*}
-and thus:
-\begin{equation*}
-\nabla V(\mathbf{x}) = g(\mathbf{x}) = \begin{bmatrix}
-b a_{12} x_1 + a_{12} x_2 + (g/l) \sin x_1\\
-a_{12}x_1 + x_2
-\end{bmatrix}
-\end{equation*}
-Since we satisfy the curl condition:
-\begin{footnotesize}
-\begin{equation*}'
-\begin{aligned}
-V(\mathbf{x}) &= \int_0^{x_1} b a_{12} \chi_1 + (g/l) \sin \chi_1 d \chi_1 + \int_0^{x_2} (a_12x_1 + \chi_2) d\chi_2\\
-&= \frac{1}{2} b a_{12} x_1^2 + \left. \frac{g}{l}(-\cos \chi_1)|\right._{0}^{x_1} + a_{12}x_1x_2 + \frac{1}{2}x_2^2\\
-&= \frac{1}{2} (b a_{12} x_1^2 + 2 a_{12}x_1 x_2 + x_2^2) + \frac{g}{l}(1- \cos x_1)\\
-&= \frac{1}{2} \mathbf{x^T}\begin{bmatrix}
-ba_{12} & a_{12} \\ a_{12} & 1
-\end{bmatrix}\mathbf{x}+\frac{g}{l}(1-\cos x_1)
-\end{aligned}
-\end{equation*}
-\end{footnotesize}
-and $V(\mathbf{x})$ is Positive Definite if $\; b a_{12} >0$ and $b a_{12} - a_{12^2}>0$. Which is true as since $a_{12}<b$ and $a_{12}>0$ to satisfy $\dot{V}(\mathbf{x})<0$. $\therefore$ The Origin is Locally Asymptotically Stable $(x_1 \in (- \pi,\pi))$
-\end{frame}
+% \end{frame}
+
+% \begin{frame}
+% \frametitle{Absolute Stability}
+% \small
+
+% \end{frame}
+
+% \begin{frame}
+% \frametitle{Establishing Boundedness Signals}
+% \small
+
+% \end{frame}
+
+% \begin{frame}
+% \frametitle{Existence and Unicity Solutions}
+% \small
+
+% \end{frame}
+
 %%
 %% Blank Slide
 %%
